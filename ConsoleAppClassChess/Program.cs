@@ -1,14 +1,11 @@
-﻿
-using ConsoleAppClassChess;
+﻿using ConsoleAppClassChess;
 
-Manager manager = new Manager();
-
-manager.PieceInit();
+PieceManager pieceManager = new PieceManager();
 
 string[,] Empty()
 {
     string[,] board = new String[9, 9];
-    
+
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
@@ -42,10 +39,6 @@ void LetterRow(string[,] board)
     board[8, 6] = " G ";
     board[8, 7] = " H ";
 }
-
-
-
-
 
 string ConvertMove(string move)
 {
@@ -173,9 +166,10 @@ void Move()
 
 void FillingTheBoard()
 {
-    string [,] board = Empty();
+    string[,] board = Empty();
     NumberColumn(board);
     LetterRow(board);
-    PiecesStartPosition(board);
 }
 
+pieceManager.GeneratePieces();
+pieceManager.TestPrint();
