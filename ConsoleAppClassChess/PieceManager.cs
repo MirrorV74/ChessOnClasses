@@ -121,12 +121,20 @@ namespace ConsoleAppClassChess
             }
         }
 
-        public void TestPrint()
+        public void FillBoard(string[,] board)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
-                Console.WriteLine(_pieces[i]);
+                board[_pieces[i]._coordinateY, _pieces[i]._coordinateX] = _pieces[i]._consoleChar;
             }
         }
+
+        // public void TestPrint()
+        // {
+        //     for (int i = 0; i < _pieces.Length; i++)
+        //     {
+        //         Console.WriteLine(_pieces[i]);
+        //     }
+        // }
     }
 }

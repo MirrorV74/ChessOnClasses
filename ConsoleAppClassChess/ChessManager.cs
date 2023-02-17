@@ -1,8 +1,11 @@
-﻿using ConsoleAppClassChess;
+namespace ConsoleAppClassChess;
 
-PieceManager pieceManager = new PieceManager();
-
-string[,] Empty()
+public class ChessManager
+{
+    PieceManager pieceManager = new PieceManager();
+    
+    
+    string[,] Empty()
 {
     string[,] board = new String[9, 9];
 
@@ -17,7 +20,7 @@ string[,] Empty()
     return board;
 }
 
-void NumberColumn(string[,] board)
+    void NumberColumn(string[,] board)
 {
     int counter = 8;
     for (int i = 0; i < 8; i++)
@@ -27,7 +30,7 @@ void NumberColumn(string[,] board)
     }
 }
 
-void LetterRow(string[,] board)
+    void LetterRow(string[,] board)
 {
     board[8, 8] = "   ";
     board[8, 0] = " A ";
@@ -40,7 +43,7 @@ void LetterRow(string[,] board)
     board[8, 7] = " H ";
 }
 
-string ConvertMove(string move)
+    string ConvertMove(string move)
 {
     bool moveIsCorrect = true;
     while (moveIsCorrect)
@@ -155,7 +158,7 @@ string ConvertMove(string move)
     return move;
 }
 
-void Move()
+    void Move()
 {
     string currentMoveStartPosition = Console.ReadLine();
     currentMoveStartPosition = ConvertMove(currentMoveStartPosition);
@@ -164,40 +167,10 @@ void Move()
     currentMoveEndPosition = ConvertMove(currentMoveEndPosition);
 }
 
-string[,] FillingTheBoard()
+    void FillingTheBoard()
 {
     string[,] board = Empty();
     NumberColumn(board);
     LetterRow(board);
-    return board;
 }
-
-string[,] board = FillingTheBoard();
-
-pieceManager.GeneratePieces();
-pieceManager.FillBoard(board);
-
-for (int i = 0; i < 9; i++)
-{
-    for (int j = 0; j < 9; j++)
-    {
-        if ((i + j) % 2 == 0)
-        {
-            Console.BackgroundColor = ConsoleColor.White;
-        }
-        else
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
-
-        if (i == 8 || j == 8)
-        {
-            Console.BackgroundColor = ConsoleColor.Yellow;
-        }
-
-        Console.Write(board[i, j]);
-    }
-
-    Console.WriteLine();
 }
-//pieceManager.TestPrint();
