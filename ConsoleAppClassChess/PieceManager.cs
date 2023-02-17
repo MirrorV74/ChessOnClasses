@@ -121,11 +121,38 @@ namespace ConsoleAppClassChess
             }
         }
 
-        public void FillBoard(string[,] board)
+        public void RefreshBoard(string[,] board)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
                 board[_pieces[i]._coordinateY, _pieces[i]._coordinateX] = _pieces[i]._consoleChar;
+            }
+        }
+
+        public void PrintBoard(string[,] board)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if ((i + j) % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
+
+                    if (i == 8 || j == 8)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                    }
+
+                    Console.Write(board[i, j]);
+                }
+
+                Console.WriteLine();
             }
         }
 

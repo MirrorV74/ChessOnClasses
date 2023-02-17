@@ -21,8 +21,13 @@ class Piece
         _color = color;
     }
 
-    public override string ToString()
+    bool RookMove()
     {
-        return $"id: {_id} coordinateX: {_coordinateX} coordinateY: {_coordinateY} consoleChar: {_consoleChar} type: {_type} moved: {_moved} color: {_color}";
+        
     }
+
+    // public override string ToString()
+    // {
+    //     return $"id: {_id} coordinateX: {_coordinateX} coordinateY: {_coordinateY} consoleChar: {_consoleChar} type: {_type} moved: {_moved} color: {_color}";
+    // }
 }
