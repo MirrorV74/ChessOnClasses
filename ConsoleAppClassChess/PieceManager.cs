@@ -128,13 +128,87 @@ namespace ConsoleAppClassChess
                 board[_pieces[i]._coordinateY, _pieces[i]._coordinateX] = _pieces[i]._consoleChar;
             }
         }
+        
+        public Piece ReturnPiece(string currentMoveStartPosition)
+        {
+            Piece piece = new Piece(404, 0, 0, "0", "0", false, ConsoleColor.Red);
+            for (int i = 0; i < _pieces.Length; i++)
+            {
+                if (_pieces[i]._coordinateX == currentMoveStartPosition[0] && _pieces[i]._coordinateY == currentMoveStartPosition[1])
+                {
+                    piece = _pieces[i];
+                }
+            }
+            return piece;
+        }
 
-        // public void TestPrint()
-        // {
-        //     for (int i = 0; i < _pieces.Length; i++)
-        //     {
-        //         Console.WriteLine(_pieces[i]);
-        //     }
-        // }
+        public void ChangePiecePosition(string currentMoveStartPosition, string currentMoveEndPosition)
+        {
+            for (int i = 0; i < _pieces.Length; i++)
+            {
+                if (_pieces[i]._coordinateX == currentMoveStartPosition[0] && _pieces[i]._coordinateY == currentMoveStartPosition[1])
+                {
+                    _pieces[i]._coordinateY = currentMoveEndPosition[0];
+                    _pieces[i]._coordinateX = currentMoveEndPosition[1];
+                }
+            }
+        }
+
+        public void DeletePiece(string currentMoveEndPosition)
+        {
+            for (int i = 0; i < _pieces.Length; i++)
+            {
+                if (_pieces[i]._coordinateX == currentMoveEndPosition[0] && _pieces[i]._coordinateY == currentMoveEndPosition[1])
+                {
+                    _pieces[i] = null;
+                }
+            }
+        }
+        
+        public int[,] PawnMove(Piece currentPiece)
+        {
+            int var = 0;
+            int[,] attackedTiles = new int[64, 2];
+            if (currentPiece._color == ConsoleColor.White)
+            {
+                var = 1;
+            }
+            else if (currentPiece._color == ConsoleColor.Black)
+            {
+                var = -1;
+            }
+
+            for (int i = 0; i < _pieces.Length; i++)
+            {
+                if (!(_pieces[i]._coordinateY == currentPiece._coordinateY - 1 * var &&
+                      _pieces[i]._coordinateX == currentPiece._coordinateX))
+                {
+                    attackedTiles[0, 0] = currentPiece._coordinateY - 1 * var;
+                    attackedTiles[0, 1] = currentPiece._coordinateX;
+                }
+                if (!(_pieces[i]._coordinateY == currentPiece._coordinateY - 2 * var &&
+                      _pieces[i]._coordinateX == currentPiece._coordinateX))
+                {
+                    attackedTiles[0, 0] = currentPiece._coordinateY - 2 * var;
+                    attackedTiles[0, 1] = currentPiece._coordinateX;
+                }
+            }
+            return attackedTiles;
+        }
+        
+        public int[,] RookMove(Piece currentPawn)
+        {
+            int[,] attackedTiles = new int[64, 2];
+
+            return attackedTiles;
+        }
+
+         public void TestPrint()
+         {
+             for (int i = 0; i < _pieces.Length; i++)
+             {
+                 Console.WriteLine(_pieces[i]);
+             }
+         }
     }
 }

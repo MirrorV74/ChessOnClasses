@@ -43,7 +43,7 @@ void LetterRow(string[,] board)
 string ConvertMove(string move)
 {
     bool moveIsCorrect = true;
-    while (moveIsCorrect)
+    do
     {
         char row = move[1];
         switch (row)
@@ -51,42 +51,42 @@ string ConvertMove(string move)
             case '1':
             {
                 move = move.Replace("1", "7");
-                return move;
+                break;
             }
             case '2':
             {
                 move = move.Replace("2", "6");
-                return move;
+                break;
             }
             case '3':
             {
                 move = move.Replace("3", "5");
-                return move;
+                break;
             }
             case '4':
             {
                 move = move.Replace("4", "4");
-                return move;
+                break;
             }
             case '5':
             {
                 move = move.Replace("5", "3");
-                return move;
+                break;
             }
             case '6':
             {
                 move = move.Replace("6", "2");
-                return move;
+                break;
             }
             case '7':
             {
                 move = move.Replace("7", "1");
-                return move;
+                break;
             }
             case '8':
             {
                 move = move.Replace("8", "0");
-                return move;
+                break;
             }
             default:
             {
@@ -95,53 +95,49 @@ string ConvertMove(string move)
                 break;
             }
         }
-    }
 
-    moveIsCorrect = true;
-    while (moveIsCorrect)
-    {
         char column = move.ToLower()[0];
         switch (column)
         {
             case 'a':
             {
-                move = move.Replace("a", "o");
-                return move;
+                move = move.Replace("a", "0");
+                break;
             }
             case 'b':
             {
                 move = move.Replace("b", "1");
-                return move;
+                break;
             }
             case 'c':
             {
                 move = move.Replace("c", "2");
-                return move;
+                break;
             }
             case 'd':
             {
                 move = move.Replace("d", "3");
-                return move;
+                break;
             }
             case 'e':
             {
                 move = move.Replace("e", "4");
-                return move;
+                break;
             }
             case 'f':
             {
                 move = move.Replace("f", "5");
-                return move;
+                break;
             }
             case 'g':
             {
                 move = move.Replace("g", "6");
-                return move;
+                break;
             }
             case 'h':
             {
                 move = move.Replace("h", "7");
-                return move;
+                break;
             }
             default:
             {
@@ -150,8 +146,7 @@ string ConvertMove(string move)
                 break;
             }
         }
-    }
-
+    } while (!moveIsCorrect);
     return move;
 }
 
@@ -159,9 +154,53 @@ void Move()
 {
     string currentMoveStartPosition = Console.ReadLine();
     currentMoveStartPosition = ConvertMove(currentMoveStartPosition);
+    Console.WriteLine(currentMoveStartPosition);
+        
+    Piece currentPiece = pieceManager.ReturnPiece(currentMoveStartPosition);
+
+    int[,] attackedTiles = new int[64, 2];
 
     string currentMoveEndPosition = Console.ReadLine();
     currentMoveEndPosition = ConvertMove(currentMoveEndPosition);
+    Console.WriteLine(currentMoveEndPosition);
+        
+    switch (currentPiece._type)
+    {
+        case "pawn":
+        {
+            attackedTiles = pieceManager.PawnMove(currentPiece);
+            break;
+        }
+        case "bishop":
+        {
+            break;
+        }
+        case "knight":
+        {
+            break;
+        }
+        case "king":
+        {
+            break;
+        }
+        case "queen":
+        {
+            break;
+        }
+        case "rook":
+        {
+            break;
+        }
+    }
+
+    for (int i = 0; i < attackedTiles.GetLength(0); i++)
+    {
+        if (currentMoveEndPosition[0] == attackedTiles[i,0] && currentMoveEndPosition[1] == attackedTiles[i,1])
+        {
+            pieceManager.ChangePiecePosition(currentMoveStartPosition,currentMoveEndPosition);
+            pieceManager.DeletePiece(currentMoveEndPosition);
+        }
+    }
 }
 
 string[,] FillingTheBoard()
@@ -172,32 +211,39 @@ string[,] FillingTheBoard()
     return board;
 }
 
-string[,] board = FillingTheBoard();
+void PrintBoard(string[,] board)
+{
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if ((i + j) % 2 == 0)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+
+            if (i == 8 || j == 8)
+            {
+                Console.BackgroundColor = ConsoleColor.Yellow;
+            }
+
+            Console.Write(board[i, j]);
+        }
+
+        Console.WriteLine();
+    }
+}
 
 pieceManager.GeneratePieces();
+string[,] board = FillingTheBoard();
 pieceManager.FillBoard(board);
+PrintBoard(board);
+Move();
+pieceManager.FillBoard(board);
+PrintBoard(board);
 
-for (int i = 0; i < 9; i++)
-{
-    for (int j = 0; j < 9; j++)
-    {
-        if ((i + j) % 2 == 0)
-        {
-            Console.BackgroundColor = ConsoleColor.White;
-        }
-        else
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
-
-        if (i == 8 || j == 8)
-        {
-            Console.BackgroundColor = ConsoleColor.Yellow;
-        }
-
-        Console.Write(board[i, j]);
-    }
-
-    Console.WriteLine();
-}
-//pieceManager.TestPrint();
+pieceManager.TestPrint();
