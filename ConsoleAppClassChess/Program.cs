@@ -40,11 +40,13 @@ void LetterRow(string[,] board)
     board[8, 7] = " H ";
 }
 
-string ConvertMove(string move)
+int ConvertMove(string move)
 {
-    bool moveIsCorrect = true;
+    bool moveIsCorrect;
     do
     {
+        moveIsCorrect = true;
+
         char row = move[1];
         switch (row)
         {
@@ -141,34 +143,44 @@ string ConvertMove(string move)
             }
             default:
             {
-                Console.WriteLine("Incorrect wording");
+                Console.WriteLine("Incorrect wording. Try again!");
                 moveIsCorrect = false;
                 break;
             }
         }
     } while (!moveIsCorrect);
-    return move;
+
+    int moveI = Int32.Parse(move);
+    return moveI;
 }
 
-void Move()
+void Move(string[,] board)
 {
     string currentMoveStartPosition = Console.ReadLine();
-    currentMoveStartPosition = ConvertMove(currentMoveStartPosition);
-    Console.WriteLine(currentMoveStartPosition);
-        
-    Piece currentPiece = pieceManager.ReturnPiece(currentMoveStartPosition);
+    int currentStart = ConvertMove(currentMoveStartPosition);
+
+    Piece currentPiece = pieceManager.ReturnPiece(currentStart);
+    
+    Console.WriteLine(currentPiece);
 
     int[,] attackedTiles = new int[64, 2];
 
     string currentMoveEndPosition = Console.ReadLine();
-    currentMoveEndPosition = ConvertMove(currentMoveEndPosition);
-    Console.WriteLine(currentMoveEndPosition);
-        
+    int currentEnd = ConvertMove(currentMoveEndPosition);
+
     switch (currentPiece._type)
     {
         case "pawn":
         {
-            attackedTiles = pieceManager.PawnMove(currentPiece);
+            attackedTiles = pieceManager.PawnMove(currentPiece, board);
+            for (int i = 0; i < attackedTiles.GetLength(0); i++)
+            {
+                if (!(attackedTiles[i, 0] == 0 && attackedTiles[i, 1] == 0))
+                {
+                    Console.WriteLine($"{attackedTiles[i, 0]} {attackedTiles[i, 1]}");
+                }
+            }
+
             break;
         }
         case "bishop":
@@ -193,12 +205,16 @@ void Move()
         }
     }
 
-    for (int i = 0; i < attackedTiles.GetLength(0); i++)
+    for (int i = 0; i < attackedTiles.GetLength(1); i++)
     {
-        if (currentMoveEndPosition[0] == attackedTiles[i,0] && currentMoveEndPosition[1] == attackedTiles[i,1])
+        if (currentEnd % 10 == attackedTiles[i, 0] && currentEnd / 10 == attackedTiles[i, 1])
         {
-            pieceManager.ChangePiecePosition(currentMoveStartPosition,currentMoveEndPosition);
-            pieceManager.DeletePiece(currentMoveEndPosition);
+            pieceManager.DeletePiece(currentEnd);
+            pieceManager.ChangePiecePosition(currentPiece, currentEnd);
+
+            board[currentStart % 10, currentStart / 10] = Tile.Empty;
+
+            break;
         }
     }
 }
@@ -233,17 +249,17 @@ void PrintBoard(string[,] board)
 
             Console.Write(board[i, j]);
         }
-
         Console.WriteLine();
     }
+    Console.ResetColor();
 }
 
 pieceManager.GeneratePieces();
 string[,] board = FillingTheBoard();
-pieceManager.FillBoard(board);
-PrintBoard(board);
-Move();
-pieceManager.FillBoard(board);
-PrintBoard(board);
-
-pieceManager.TestPrint();
+for (int i = 0; i < 3; i++)
+{
+    Console.Clear();
+    pieceManager.RefreshBoard(board);
+    PrintBoard(board);
+    Move(board);
+}

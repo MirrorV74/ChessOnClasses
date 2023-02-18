@@ -121,7 +121,7 @@ namespace ConsoleAppClassChess
             }
         }
 
-        public void FillBoard(string[,] board)
+        public void RefreshBoard(string[,] board)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
@@ -129,43 +129,48 @@ namespace ConsoleAppClassChess
             }
         }
         
-        public Piece ReturnPiece(string currentMoveStartPosition)
+        public Piece ReturnPiece(int currentMoveStartPosition)
         {
             Piece piece = new Piece(404, 0, 0, "0", "0", false, ConsoleColor.Red);
+
             for (int i = 0; i < _pieces.Length; i++)
             {
-                if (_pieces[i]._coordinateX == currentMoveStartPosition[0] && _pieces[i]._coordinateY == currentMoveStartPosition[1])
+                if (_pieces[i]._coordinateY == currentMoveStartPosition%10 && _pieces[i]._coordinateX == currentMoveStartPosition/10)
                 {
                     piece = _pieces[i];
+                    break;
                 }
             }
             return piece;
         }
 
-        public void ChangePiecePosition(string currentMoveStartPosition, string currentMoveEndPosition)
+        public void ChangePiecePosition(Piece currentPiece, int currentMoveEndPosition)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
-                if (_pieces[i]._coordinateX == currentMoveStartPosition[0] && _pieces[i]._coordinateY == currentMoveStartPosition[1])
+                if (_pieces[i]._coordinateX == currentPiece._coordinateX && _pieces[i]._coordinateY == currentPiece._coordinateY)
                 {
-                    _pieces[i]._coordinateY = currentMoveEndPosition[0];
-                    _pieces[i]._coordinateX = currentMoveEndPosition[1];
+                    _pieces[i]._coordinateY = currentMoveEndPosition%10;
+                    _pieces[i]._coordinateX = currentMoveEndPosition/10;
+                    _pieces[i]._moved = currentPiece._moved;
+                    break;
                 }
             }
         }
 
-        public void DeletePiece(string currentMoveEndPosition)
+        public void DeletePiece(int currentMoveEndPosition)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
-                if (_pieces[i]._coordinateX == currentMoveEndPosition[0] && _pieces[i]._coordinateY == currentMoveEndPosition[1])
+                if (_pieces[i]._coordinateX == currentMoveEndPosition/10 && _pieces[i]._coordinateY == currentMoveEndPosition%10)
                 {
                     _pieces[i] = null;
+                    break;
                 }
             }
         }
         
-        public int[,] PawnMove(Piece currentPiece)
+        public int[,] PawnMove(Piece currentPiece, string[,] board)
         {
             int var = 0;
             int[,] attackedTiles = new int[64, 2];
@@ -178,21 +183,23 @@ namespace ConsoleAppClassChess
                 var = -1;
             }
 
-            for (int i = 0; i < _pieces.Length; i++)
+            attackedTiles[0, 0] = currentPiece._coordinateY - 1 * var;
+            attackedTiles[0, 1] = currentPiece._coordinateX;
+            attackedTiles[1, 0] = currentPiece._coordinateY - 2 * var;
+            attackedTiles[1, 1] = currentPiece._coordinateX;
+
+            if (board[currentPiece._coordinateY - 1 * var,currentPiece._coordinateX] == Tile.Empty)
             {
-                if (!(_pieces[i]._coordinateY == currentPiece._coordinateY - 1 * var &&
-                      _pieces[i]._coordinateX == currentPiece._coordinateX))
-                {
-                    attackedTiles[0, 0] = currentPiece._coordinateY - 1 * var;
-                    attackedTiles[0, 1] = currentPiece._coordinateX;
-                }
-                if (!(_pieces[i]._coordinateY == currentPiece._coordinateY - 2 * var &&
-                      _pieces[i]._coordinateX == currentPiece._coordinateX))
-                {
-                    attackedTiles[0, 0] = currentPiece._coordinateY - 2 * var;
-                    attackedTiles[0, 1] = currentPiece._coordinateX;
-                }
+                attackedTiles[0, 0] = currentPiece._coordinateY - 1 * var;
+                attackedTiles[0, 1] = currentPiece._coordinateX;
             }
+            if (board[currentPiece._coordinateY - 2 * var,currentPiece._coordinateX] == Tile.Empty && currentPiece._moved == false)
+            {
+                attackedTiles[1, 0] = currentPiece._coordinateY - 2 * var;
+                attackedTiles[1, 1] = currentPiece._coordinateX;
+            }
+
+            currentPiece._moved = true;
             return attackedTiles;
         }
         
