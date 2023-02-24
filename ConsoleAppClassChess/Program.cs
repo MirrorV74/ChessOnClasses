@@ -10,7 +10,7 @@ string[,] Empty()
     {
         for (int j = 0; j < 8; j++)
         {
-            board[i, j] = Tile.Empty;
+            board[i, j] = TileChar.Empty;
         }
     }
 
@@ -40,7 +40,7 @@ void LetterRow(string[,] board)
     board[8, 7] = " H ";
 }
 
-int ConvertMove(string move)
+Tile ConvertMove(string move)
 {
     bool moveIsCorrect;
     do
@@ -151,13 +151,16 @@ int ConvertMove(string move)
     } while (!moveIsCorrect);
 
     int moveI = Int32.Parse(move);
-    return moveI;
+    Tile current = new Tile();
+    current.X = moveI / 10;
+    current.Y = moveI % 10;
+    return current;
 }
 
 void Move(string[,] board)
 {
     string currentMoveStartPosition = Console.ReadLine();
-    int currentStart = ConvertMove(currentMoveStartPosition);
+    Tile currentStart = ConvertMove(currentMoveStartPosition);
 
     Piece currentPiece = pieceManager.ReturnPiece(currentStart);
     
@@ -166,20 +169,20 @@ void Move(string[,] board)
     int[,] attackedTiles = new int[64, 2];
 
     string currentMoveEndPosition = Console.ReadLine();
-    int currentEnd = ConvertMove(currentMoveEndPosition);
+    Tile currentEnd = ConvertMove(currentMoveEndPosition);
 
     switch (currentPiece._type)
     {
         case "pawn":
         {
             attackedTiles = pieceManager.PawnMove(currentPiece, board);
-            for (int i = 0; i < attackedTiles.GetLength(0); i++)
-            {
-                if (!(attackedTiles[i, 0] == 0 && attackedTiles[i, 1] == 0))
-                {
-                    Console.WriteLine($"{attackedTiles[i, 0]} {attackedTiles[i, 1]}");
-                }
-            }
+            // for (int i = 0; i < attackedTiles.GetLength(0); i++)
+            // {
+            //     if (!(attackedTiles[i, 0] == 0 && attackedTiles[i, 1] == 0))
+            //     {
+            //         Console.WriteLine($"{attackedTiles[i, 0]} {attackedTiles[i, 1]}");
+            //     }
+            // } 
 
             break;
         }
@@ -207,12 +210,12 @@ void Move(string[,] board)
 
     for (int i = 0; i < attackedTiles.GetLength(1); i++)
     {
-        if (currentEnd % 10 == attackedTiles[i, 0] && currentEnd / 10 == attackedTiles[i, 1])
+        if (currentEnd.Y == attackedTiles[i, 0] && currentEnd.X == attackedTiles[i, 1])
         {
             pieceManager.DeletePiece(currentEnd);
             pieceManager.ChangePiecePosition(currentPiece, currentEnd);
 
-            board[currentStart % 10, currentStart / 10] = Tile.Empty;
+            board[currentStart.Y, currentStart.X] = TileChar.Empty;
 
             break;
         }

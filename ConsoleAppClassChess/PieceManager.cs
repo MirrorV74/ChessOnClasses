@@ -42,7 +42,7 @@ namespace ConsoleAppClassChess
                 {
                     coordinateY = 6;
                     type = "pawn";
-                    consoleChar = Tile.WhitePawn;
+                    consoleChar = TileChar.WhitePawn;
                 }
 
                 if (i > 23)
@@ -54,66 +54,66 @@ namespace ConsoleAppClassChess
                 {
                     coordinateY = 1;
                     type = "pawn";
-                    consoleChar = Tile.BlackPawn;
+                    consoleChar = TileChar.BlackPawn;
                 }
 
                 if (i == 0 || i == 7)
                 {
-                    consoleChar = Tile.WhiteRook;
+                    consoleChar = TileChar.WhiteRook;
                     type = "rook";
                 }
 
                 if (i == 24 || i == 31)
                 {
-                    consoleChar = Tile.BlackRook;
+                    consoleChar = TileChar.BlackRook;
                     type = "rook";
                 }
 
                 if (i == 1 || i == 6)
                 {
-                    consoleChar = Tile.WhiteKnight;
+                    consoleChar = TileChar.WhiteKnight;
                     type = "knight";
                 }
 
                 if (i == 25 || i == 30)
                 {
-                    consoleChar = Tile.BlackKnight;
+                    consoleChar = TileChar.BlackKnight;
                     type = "knight";
                 }
 
                 if (i == 2 || i == 5)
                 {
-                    consoleChar = Tile.WhiteBishop;
+                    consoleChar = TileChar.WhiteBishop;
                     type = "bishop";
                 }
 
                 if (i == 26 || i == 29)
                 {
-                    consoleChar = Tile.BlackBishop;
+                    consoleChar = TileChar.BlackBishop;
                     type = "bishop";
                 }
 
                 if (i == 4)
                 {
-                    consoleChar = Tile.WhiteKing;
+                    consoleChar = TileChar.WhiteKing;
                     type = "king";
                 }
 
                 if (i == 28)
                 {
-                    consoleChar = Tile.BlackKing;
+                    consoleChar = TileChar.BlackKing;
                     type = "king";
                 }
 
                 if (i == 3)
                 {
-                    consoleChar = Tile.WhiteQueen;
+                    consoleChar = TileChar.WhiteQueen;
                     type = "queen";
                 }
 
                 if (i == 27)
                 {
-                    consoleChar = Tile.BlackQueen;
+                    consoleChar = TileChar.BlackQueen;
                     type = "queen";
                 }
 
@@ -129,13 +129,13 @@ namespace ConsoleAppClassChess
             }
         }
         
-        public Piece ReturnPiece(int currentMoveStartPosition)
+        public Piece ReturnPiece(Tile currentStartPosition)
         {
             Piece piece = new Piece(404, 0, 0, "0", "0", false, ConsoleColor.Red);
 
             for (int i = 0; i < _pieces.Length; i++)
             {
-                if (_pieces[i]._coordinateY == currentMoveStartPosition%10 && _pieces[i]._coordinateX == currentMoveStartPosition/10)
+                if (_pieces[i]._coordinateY == currentStartPosition.Y && _pieces[i]._coordinateX == currentStartPosition.X)
                 {
                     piece = _pieces[i];
                     break;
@@ -144,25 +144,25 @@ namespace ConsoleAppClassChess
             return piece;
         }
 
-        public void ChangePiecePosition(Piece currentPiece, int currentMoveEndPosition)
+        public void ChangePiecePosition(Piece currentPiece, Tile currentEndPosition)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
                 if (_pieces[i]._coordinateX == currentPiece._coordinateX && _pieces[i]._coordinateY == currentPiece._coordinateY)
                 {
-                    _pieces[i]._coordinateY = currentMoveEndPosition%10;
-                    _pieces[i]._coordinateX = currentMoveEndPosition/10;
+                    _pieces[i]._coordinateY = currentEndPosition.Y;
+                    _pieces[i]._coordinateX = currentEndPosition.X;
                     _pieces[i]._moved = currentPiece._moved;
                     break;
                 }
             }
         }
 
-        public void DeletePiece(int currentMoveEndPosition)
+        public void DeletePiece(Tile currentEndPosition)
         {
             for (int i = 0; i < _pieces.Length; i++)
             {
-                if (_pieces[i]._coordinateX == currentMoveEndPosition/10 && _pieces[i]._coordinateY == currentMoveEndPosition%10)
+                if (_pieces[i]._coordinateX == currentEndPosition.X && _pieces[i]._coordinateY == currentEndPosition.Y)
                 {
                     _pieces[i] = null;
                     break;
@@ -172,6 +172,8 @@ namespace ConsoleAppClassChess
         
         public int[,] PawnMove(Piece currentPiece, string[,] board)
         {
+            Tile[] attackedTiles1 = new Tile[64];
+
             int var = 0;
             int[,] attackedTiles = new int[64, 2];
             if (currentPiece._color == ConsoleColor.White)
@@ -188,12 +190,12 @@ namespace ConsoleAppClassChess
             attackedTiles[1, 0] = currentPiece._coordinateY - 2 * var;
             attackedTiles[1, 1] = currentPiece._coordinateX;
 
-            if (board[currentPiece._coordinateY - 1 * var,currentPiece._coordinateX] == Tile.Empty)
+            if (board[currentPiece._coordinateY - 1 * var,currentPiece._coordinateX] == TileChar.Empty)
             {
                 attackedTiles[0, 0] = currentPiece._coordinateY - 1 * var;
                 attackedTiles[0, 1] = currentPiece._coordinateX;
             }
-            if (board[currentPiece._coordinateY - 2 * var,currentPiece._coordinateX] == Tile.Empty && currentPiece._moved == false)
+            if (board[currentPiece._coordinateY - 2 * var,currentPiece._coordinateX] == TileChar.Empty && currentPiece._moved == false)
             {
                 attackedTiles[1, 0] = currentPiece._coordinateY - 2 * var;
                 attackedTiles[1, 1] = currentPiece._coordinateX;
